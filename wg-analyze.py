@@ -30,9 +30,21 @@ def dumpJSONtoFile(filename, data, mode='w'):
             json.dump(data, f, ensure_ascii=False, indent=4)
     return
 
+
+def printTable(data):
+    separator_symbol = '-'
+    separator_len = 152
+    seperator_line = ''.join([separator_symbol for i in range(separator_len)])
+    print(seperator_line)
+    print(f'{'NAME':35}| {'PRIVATE IP':17}| {'PUBLIC IP':17}| {'TX':17}| {'RX':17}| {'LATEST HANDSHAKE':40}')
+    print(seperator_line)
+    for val in data.values():
+        print(f'{val['name']:35}| {val['private_ip']:17}| {val['public_ip']:17}| {val['TX']:>16} | {val['RX']:>16} | {val['latest_handshake']:>39}')
+    print(seperator_line)
+
 # ----------------------------------------------------------------------
 
-def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, show_json=True):
+def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table_key='private_ip', show_json=True):
     conf = subprocess.run(['grep', '-i', 'peer', '-A3', conf_filename], capture_output=True, text=True).stdout.splitlines()
     wg = subprocess.run(['wg'], capture_output=True, text=True).stdout.splitlines()
 
@@ -72,20 +84,19 @@ def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, show_json=
     if show_json == True:
         print(json.dumps(conf_json, ensure_ascii='UTF-8', indent=4))
 
+    conf_json_sort_by_private_ip = conf_json
+    conf_json_sort_by_name = dict(sorted(conf_json.items(), key=lambda x: x[1].get('name')))
+
     if show_table == True:
-        separator_symbol = '-'
-        separator_len = 152
-        seperator_line = ''.join([separator_symbol for i in range(separator_len)])
-        print(seperator_line)
-        print(f'{'NAME':35}| {'PRIVATE IP':17}| {'PUBLIC IP':17}| {'TX':17}| {'RX':17}| {'LATEST HANDSHAKE':40}')
-        print(seperator_line)
-        for val in conf_json.values():
-            print(f'{val['name']:35}| {val['private_ip']:17}| {val['public_ip']:17}| {val['TX']:>16} | {val['RX']:>16} | {val['latest_handshake']:>39}')
-        print(seperator_line)
+        if sort_table_key == 'private_ip':
+            printTable(conf_json_sort_by_private_ip)
+        if sort_table_key == 'name':
+            printTable(conf_json_sort_by_name)
 # ----------------------------------------------------------------------
 
 def main():
-    analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, show_json=False)
+    analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table_key='private_ip', show_json=False)
+    analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table_key='name', show_json=False)
 
 # ----------------------------------------------------------------------
 
