@@ -32,14 +32,19 @@ def dumpJSONtoFile(filename, data, mode='w'):
 
 
 def printTable(data):
+    w_name = 30
+    w_priv_ip = 17
+    w_pub_ip = 17
+    w_tr = 16
+    w_time = 45
     separator_symbol = '-'
-    separator_len = 152
+    separator_len = w_name + w_priv_ip + w_pub_ip + w_tr * 2 + w_time + 12
     seperator_line = ''.join([separator_symbol for i in range(separator_len)])
     print(seperator_line)
-    print(f'{'NAME':35}| {'PRIVATE IP':17}| {'PUBLIC IP':17}| {'TX':17}| {'RX':17}| {'LATEST HANDSHAKE':40}')
+    print(f'{'NAME'.ljust(w_name)}| {'PRIVATE IP'.ljust(w_priv_ip)}| {'PUBLIC IP'.ljust(w_pub_ip)}| {'TX'.ljust(w_tr)} | {'RX'.ljust(w_tr)} | {'LATEST HANDSHAKE'.ljust(w_time)}')
     print(seperator_line)
     for val in data.values():
-        print(f'{val['name']:35}| {val['private_ip']:17}| {val['public_ip']:17}| {val['TX']:>16} | {val['RX']:>16} | {val['latest_handshake']:>39}')
+        print(f'{val['name'].ljust(w_name)}| {val['private_ip'].ljust(w_priv_ip)}| {val['public_ip'].ljust(w_pub_ip)}| {val['TX'].rjust(w_tr)} | {val['RX'].rjust(w_tr)} | {val['latest_handshake'].rjust(w_time)}')
     print(seperator_line)
 
 # ----------------------------------------------------------------------
@@ -47,7 +52,7 @@ def printTable(data):
 def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table_key='private_ip', show_json=True):
     conf = subprocess.run(['grep', '-i', 'peer', '-A3', conf_filename], capture_output=True, text=True).stdout.splitlines()
     wg = subprocess.run(['wg'], capture_output=True, text=True).stdout.splitlines()
-
+    
     conf_json = {}
     for i, line in enumerate(conf):
         if 'peer' in line.lower():
@@ -73,9 +78,9 @@ def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table
             else:
                 temp_rx[1] = 0.001
                 temp_tx[1] = 0.001
-
-            conf_json[id]['RX'] = f'{(float(temp_rx[0]) * float(temp_rx[1])) / MB:.2f} MiB'
-            conf_json[id]['TX'] = f'{(float(temp_tx[0]) * float(temp_tx[1])) / MB:.2f} MiB'
+            
+            conf_json[id]['RX'] = f'{((float(temp_rx[0]) * float(temp_rx[1])) / MB):,.2f} MiB'.replace(',', ' ')
+            conf_json[id]['TX'] = f'{((float(temp_tx[0]) * float(temp_tx[1])) / MB):,.2f} MiB'.replace(',', ' ')
 
         if 'allowed' in line.lower() and 'endpoint' not in wg[i-1]:
             id = line.split()[2].replace(',', '')
