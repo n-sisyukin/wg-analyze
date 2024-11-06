@@ -32,9 +32,9 @@ def dumpJSONtoFile(filename, data, mode='w'):
 
 
 def printTable(data):
-    w_name = 30
-    w_priv_ip = 17
-    w_pub_ip = 17
+    w_name = 34
+    w_priv_ip = 16
+    w_pub_ip = 16
     w_tr = 16
     w_time = 45
     separator_symbol = '-'
