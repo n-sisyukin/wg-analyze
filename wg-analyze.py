@@ -36,7 +36,7 @@ def printTable(data):
     w_priv_ip = 16
     w_pub_ip = 16
     w_tr = 16
-    w_time = 25
+    w_time = 19
     separator_symbol = '-'
     separator_len = w_name + w_priv_ip + w_pub_ip + w_tr * 2 + w_time + 12
     seperator_line = ''.join([separator_symbol for i in range(separator_len)])
