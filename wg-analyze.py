@@ -81,7 +81,7 @@ def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table
             dict_for_replace = {' seconds':'s', ' second':'s',
                                 ' minutes':'m', ' minute':'m',
                                 ' hours':'h', ' hour':'h',
-                                ' days':'d', ' day':'d'}
+                                ' days':'d', ' day':'d', ',':''}
             for word in dict_for_replace.items():
                 conf_json[id]['latest_handshake'] = conf_json[id]['latest_handshake'].replace(word[0], word[1])
 
