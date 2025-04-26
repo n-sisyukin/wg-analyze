@@ -71,19 +71,20 @@ def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table
 
             conf_json[id]['public_ip'] = wg[i].split()[1].split(':')[0]
             temp_handshake = []
-            for word in wg[i+2].split()[2::]:
-                if word.isdigit():
-                    temp_handshake.append(f'{word.zfill(2)}')
+            if 'latest handshake' in wg[i+2].lower():
+                for word in wg[i+2].split()[2::]:
+                    if word.isdigit():
+                        temp_handshake.append(f'{word.zfill(2)}')
 
-                else:
-                    temp_handshake.append(word)
-            conf_json[id]['latest_handshake'] = ' '.join(temp_handshake)
-            dict_for_replace = {' seconds':'s', ' second':'s',
-                                ' minutes':'m', ' minute':'m',
-                                ' hours':'h', ' hour':'h',
-                                ' days':'d', ' day':'d', ',':''}
-            for word in dict_for_replace.items():
-                conf_json[id]['latest_handshake'] = conf_json[id]['latest_handshake'].replace(word[0], word[1])
+                    else:
+                        temp_handshake.append(word)
+                conf_json[id]['latest_handshake'] = ' '.join(temp_handshake)
+                dict_for_replace = {' seconds':'s', ' second':'s',
+                                    ' minutes':'m', ' minute':'m',
+                                    ' hours':'h', ' hour':'h',
+                                    ' days':'d', ' day':'d', ',':''}
+                for word in dict_for_replace.items():
+                    conf_json[id]['latest_handshake'] = conf_json[id]['latest_handshake'].replace(word[0], word[1])
 
             temp_rx = wg[i+3].split()[1:3:]
             temp_tx = wg[i+3].split()[4:6:]
