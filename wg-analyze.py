@@ -68,9 +68,8 @@ def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table
     for i, line in enumerate(wg):
         if 'endpoint' in line.lower():
             id = wg[i+1].split()[2].replace(',', '')
-
             conf_json[id]['public_ip'] = wg[i].split()[1].split(':')[0]
-            if 'latest_handshake' in wg[i+2].lower():
+            if 'handshake' in wg[i+2].lower():
                 temp_handshake = []
                 for word in wg[i+2].split()[2::]:
                     if word.isdigit():
