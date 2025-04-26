@@ -70,8 +70,8 @@ def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table
             id = wg[i+1].split()[2].replace(',', '')
 
             conf_json[id]['public_ip'] = wg[i].split()[1].split(':')[0]
-            temp_handshake = []
-            if 'latest handshake' in wg[i+2].lower():
+            if 'latest_handshake' in wg[i+2].lower():
+                temp_handshake = []
                 for word in wg[i+2].split()[2::]:
                     if word.isdigit():
                         temp_handshake.append(f'{word.zfill(2)}')
@@ -85,9 +85,11 @@ def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table
                                     ' days':'d', ' day':'d', ',':''}
                 for word in dict_for_replace.items():
                     conf_json[id]['latest_handshake'] = conf_json[id]['latest_handshake'].replace(word[0], word[1])
+            else:
+                conf_json[id]['latest_handshake'] = 'n/a'
 
-            temp_rx = wg[i+3].split()[1:3:]
-            temp_tx = wg[i+3].split()[4:6:]
+            #temp_rx = wg[i+3].split()[1:3:]
+            #temp_tx = wg[i+3].split()[4:6:]
 
             if 'transfer' in wg[i+2].lower():
                 temp_rx = wg[i+2].split()[1:3:]
