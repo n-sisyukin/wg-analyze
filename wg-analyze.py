@@ -87,18 +87,20 @@ def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table
 
             temp_rx = wg[i+3].split()[1:3:]
             temp_tx = wg[i+3].split()[4:6:]
+
+            if 'transfer' in wg[i+2].lower():
+                temp_rx = wg[i+2].split()[1:3:]
+                temp_tx = wg[i+2].split()[4:6:]
+            elif 'transfer' in wg[i+3].lower():
+                temp_rx = wg[i+3].split()[1:3:]
+                temp_tx = wg[i+3].split()[4:6:]
+
             if len(temp_rx) > 1:
                 temp_rx[1] = temp_rx[1].replace('KiB', str(2**10)).replace('MiB', str(2**20)).replace('GiB', str(2**30)).replace('B', str(1))
                 temp_tx[1] = temp_tx[1].replace('KiB', str(2**10)).replace('MiB', str(2**20)).replace('GiB', str(2**30)).replace('B', str(1))
             else:
-                if len(temp_rx) > 1:
-                    temp_rx[1] = 0.001
-                else:
-                    temp_rx.append(0.001)
-                if len(temp_tx) > 1:
-                    temp_tx[1] = 0.001
-                else:
-                    temp_tx.append(0.001)
+                temp_rx[1] = 0.001
+                temp_tx[1] = 0.001
 
             conf_json[id]['RX'] = f'{((float(temp_rx[0]) * float(temp_rx[1])) / MB):,.2f} MiB'.replace(',', ' ')
             conf_json[id]['TX'] = f'{((float(temp_tx[0]) * float(temp_tx[1])) / MB):,.2f} MiB'.replace(',', ' ')
