@@ -34,7 +34,7 @@ def dumpJSONtoFile(filename, data, mode='w'):
 def printTable(data):
     w_name = 36
     w_priv_ip = 16
-    w_pub_ip = 16
+    w_pub_ip = 20
     w_tr = 14
     w_time = 19
     separator_symbol = '-'
@@ -68,7 +68,10 @@ def analyze(conf_filename='/etc/wireguard/wg0.conf', show_table=True, sort_table
     for i, line in enumerate(wg):
         if 'endpoint' in line.lower():
             id = wg[i+1].split()[2].replace(',', '')
-            conf_json[id]['public_ip'] = wg[i].split()[1].split(':')[0]
+            if '[' not in wg[i]:
+                conf_json[id]['public_ip'] = wg[i].split()[1].split(':')[0]
+            else:
+                conf_json[id]['public_ip'] = wg[i].split()[1].split('[')[1].split(']')[0]
             if 'handshake' in wg[i+2].lower():
                 temp_handshake = []
                 for word in wg[i+2].split()[2::]:
