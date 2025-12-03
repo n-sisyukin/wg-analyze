@@ -34,7 +34,7 @@ def dumpJSONtoFile(filename, data, mode='w'):
 def printTable(data):
     w_name = 36
     w_priv_ip = 16
-    w_pub_ip = 20
+    w_pub_ip = 25
     w_tr = 14
     w_time = 19
     separator_symbol = '-'
